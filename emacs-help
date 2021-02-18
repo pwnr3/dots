@@ -1,0 +1,390 @@
+input greek letter
+λ as example:
+    C-x 8 RET 03bb RET -> λ
+    C-x 8 RET GREEK SMALL LETTER LAMBDA RET -> λ
+    C-x 8 RET * lambda TAB
+<s TAB
+    insert code
+C-c C-,
+    org-insert-structure-template
+    code/comment/quote/... more
+C-c '
+    edit code segment
+subscript
+    '_' the radius of the sun is R_sun or R_{sun}
+
+Config
+    M-x customize-face RET default              # use to set font and other setting
+    C-h v package-activated-list                # check loaded packages
+
+Multiple cursors
+  1. get a active region
+  2. C-c m c # mc/edit-lines
+  3. press <return> or C-g to quit multiple-cursors-mode
+
+
+Org
+    C-c C-t         org-todo, change TODO status
+    M-RET           same start as the upper line
+    M-shift-RET     org-insert-todo-heading
+                    (also)insert a checkbox
+    C-c C-o         org-open-at-point, open link
+    C-c l           org-store-link
+    C-c C-l         org-insert-link
+    Shift-TAB       change display levels
+    C-c C-s         org-schedule, open calendar
+    M-x org-agenda
+
+    List
+    C-x -           change list prefix
+    [/]             show percent of checked checkbox
+    [%]             show ratio of checked checkbox
+    C-x C-t         transpose-lines, exchange current and upper line
+    M-<arrow>       exchange lines
+    C-c C-c         check checkbox
+    "html"          org-export-region-as-html
+
+    C-c .           insert timestamp
+
+help
+    a command C-x r l is a command for bookmark-bmenu-list
+    use prefix+C-h (C-x C-h or C-x r C-h) for help information
+    Built-in
+    C-h m           describe-mode, see all key binds and docs of current major and minor modes
+    C-h w           where-is, get which keystrokes invoke a given command
+    C-h c           describe-key-briefly, what command is bound to a key
+    C-h k           describe-key, what command is bound to a key, along with the doc
+    C-h e           view-echo-area-message, see the logging of echo area messages
+    C-h v           describe-variable
+    C-h C-h         help-for-help
+     
+    Info
+    M-x info == C-h i
+        see all info manual in Emacs
+    M-x info-emacs-manual == C-h r == <f1> r
+        see manual section for Emacs
+
+    Man
+    M-x man         get UNIX manual
+    M-x woman       browse UN*X man page for TOPIC(without using external man program)
+
+key remember
+    C-x             default and global binding come with Emacs
+    C-c             for users to define
+    C-u             alter behaviors of commands
+                    C-u             4
+                    C-u C-u         4^2 = 16
+                    C-u C-u C-u     4^3 = 64....
+    C-<num>         repeat a command <num> times
+    Example:
+    C-c h g         helm-do-grep
+        C-c         user define
+        h           helm
+        g           grep
+
+Opening files
+    M-x ffap        find-file-at-point
+
+Ido mode
+    Interactively Do Things
+    like Helm or Ivy, but not that powerful as much
+
+Buffer
+    replace ibuffer with list-buffers
+    (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+    Filtering commands
+    / m             add a filter by a major mode
+    / n             add a filter by a buffer name
+    / c             add a filter by a buffer content
+    / f             add a filter by a filename
+    / >             add a filter by a buffer size
+    / <             add a filter by a buffer size
+    / /             remove all filters in effect
+
+    Filter group commands
+    / g             create a filter group from filers
+                    after filtering commands, use /g to give the group a name
+    TAB             move to next filter group
+    M-p             move to previous filter group
+    / \             remove all active filter group
+    / S             save the current groups with a name
+    / R             restore previously saved groups
+    / X             delete previously saved gropus
+
+    Sorting commands
+    ,               rotate between sorting modes
+    s i             reverse current sorting order
+    s a             sort buffers by alphabet
+    s f             sort buffers by filename
+    s v             sort buffers by last viewing time
+    s s             sort buffers by size
+    s m             sort buffers by major modes
+
+    q               quit ibuffer
+    o               open buffer, point go to new buffer
+    C-o             open buffer, point stay at buffer list
+    C-x 0           close a buffer
+    C-x 3           create a vertical buffer to the right
+                    then use 'o' and the new window will show the selected buffer
+    g               ibuffer-update
+    m               mark
+                    A : view marked buffers
+                    S : save
+                    D : close
+                    V : discard changes
+    u               unmark
+    (e,f)/RET       bury and replace the list with selected buffer
+    =               differences between the buffer and its associated file
+
+Bookmark
+    C-x r           bookmark related prefix
+    C-x r m         bookmark-set, set bookmark at point
+    C-x r b         bookmark-jump, jump to a saved bookmark
+    C-x r l         bookmark-bmenu-list, open the list of all bookmarks
+                    RET     open a bookmark
+                    l       load a bookmark and close other buffers
+                    n       go to next entry
+                    p       go to previous entry
+                    s       save current list to file
+                    o       open bookmark in other window and move point to it
+                    C-o     similar to 'o' but point remains on the bookmark list
+                    r       rename bookmark at point
+                    m       mark bookmark at point for displaying
+                    v       display all marked bookmarks
+                    d       flag bookmark for deletion
+                    x       delete flagged bookmarks
+                    u       unmark marked or flagged bookmarks
+
+Motion commands
+    M-g c           move to the nth character
+    M-g l/g         move to the nth line
+                    l for Emacs < 23.2, g for >= 23.2
+
+
+Navigation
+    C-M-f           forward-sexp, move forward over a balanced expression
+    C-M-b           backward-sexp, move backward over a balanced expression
+    C-M-k           kill-sexp, kill balanced expressioin
+    C-M-t           transpose-sexp, transpose expressions
+    C-M-<SPC>       mark-sexp, put mark after following expression
+    C-M-@           mark-sexp
+    
+
+Edit
+    DEL = <backspace>
+    C-S-DEL         kill entire line
+    M-d             kill forward to the end of a word
+    M-DEL           kill backward to the beginning of a word
+    M-\             kill all spaces at point
+    M-SPC           kill all spaces expect one at point
+    C-k             kill to the end of line
+    M-k             kill a sentence
+    M-;             comment/uncomment code
+                    if you highlight a region, M-; comments out the region
+    M-/             dynamic abbreviation, cycles the candidates that meet the prefix
+    C-<num> C-y     paste nth kill-ring
+    M-y             cycle trhough the entries in kill-ring
+    C-h v kill-ring 
+                    see the kill-ring content
+    C-/             undo
+    C-x u           undo
+    redo            Emacs keep track your do and undo actioin, so if you want to redo
+                    execute some motion and then undo
+                    as example, track of the history:
+                    insert 'aaa'(type 'aaa')
+                    insert 'bbb'(type 'bbb')
+                    insert 'ccc'(type 'ccc')
+                    undo insert 'ccc'(C-/)
+                    undo insert 'bbb'(C-/)
+                    insert 'bbb'(C-f C-/, C-f to break continuous C-/ action)
+
+Mark and region
+    C-SPC C-SPC     make a mark
+    C-u C-SPC       back to last mark(cycle through)
+    C-w             kill the region
+    M-w             copy the region
+    C-y             yank the region
+                    when you yank, you create a mark at point before the new content is inserted
+                    after inserting, point moves according to the size of the content
+                    use C-u C-SPC or C-x C-x to return to the where you yanked
+    C-x C-x         exchange-point-and-mark
+                    if you lose the highlighting when mark a region, use C-x C-x to go back
+                    
+
+Mark ring
+    each buffer has its own mark ring, so you can cycle through various marks
+    use C-x C-SPC for global mark ring, which persist across buffers
+
+
+Search
+    C-r             isearch-backward
+    C-s C-w         select point to end of a word to C-s prompt
+    C-s             M-p             move to the previous input
+                    M-n             move to the next input
+    C-u C-s         search with regexp
+    M-s .           isearch-forward-symbol-at-point, feed the symbol at point to C-s
+    M-s o           run 'occur'
+    M-s h .         highlight-symbol-at-point
+    M-s h l         highlight-lines-matching-regexp
+    M-s h r         highlight-regexp
+    M-s h u         unhighligh-regexp
+
+    occur           list all line that match a string or a regexp
+                    display results in buffer *Occur*
+                    M-g n           go to next match
+                    M-g p           go to previous match
+                    C-x z           repeat previous command(keep pressing 'z')
+                    in *Occur*
+                        C-p/n       go through lines
+                        <           go to beginning of buffer
+                        >           go to end of buffer
+                        o           jump to the match, go to the matched place
+                        C-o         jump to the match, stay at *Occur*
+                        e           occur-edit-mode, edit in *Occur*
+                        C-c C-c     exit editing mode
+                        g           if your searching file is updated, press g to refresh *Occur*
+                        h           help for *Occur*
+                        C-h m       help for *Occur*
+                        q           quit *Occur*
+
+                    multi-occur     search for multiple buffers
+                    multi-occur-in-matching-buffers         support regexp
+
+    M-%             query-replace
+    C-M-%           query and replace with regexp(this command is a bit hard to press)
+    M-x rgrep       search 'recursively' with 'grep' command in directory
+                    with C-u prefix, you can edit constructed shell command before executing
+                    with two C-u, directly edit and run grep-find-command
+                    in *grep* buffer, type ? or h or C-h m for key bindings
+
+Frames
+    C-x 5 C-f       find-file-other-frame
+    C-x 5 f         find-file-other-frame
+    C-x 5 C-o       display-buffer-other-frame
+    C-x 5 .         find-tag-other-frame
+    C-x 5 0         delete-frame
+    C-x 5 1         delete-other-frame
+    C-x 5 2         make-frame-command
+    C-x 5 b         switch-to-buffer-other-frame
+    C-x 5 d         dired-other-frame
+    C-x 5 m         compose-mail-other-frame, open another frame for composing email
+    C-x 5 o         other-frame, cycle through available frames
+    C-x 5 r         find-file-read-only-other-frame
+
+Window
+    C-x 2           split-window-below
+    C-x 3           split-window-right
+    C-x o           other-window
+    C-x 0           close current window
+    C-x 1           close all other windows
+    C-x 4           prefix for opening things in other buffer
+                    C-x 4 C-f           find-file-other-window
+                    C-x 4 C-o           display-buffer
+                    C-x 4 .             find-tag-other-window
+                    C-x 4 0             kill-buffer-and-window
+                    C-x 4 a             add-change-log-entry-other-window
+                                        open another window to record the change of the current editing file
+                    C-x 4 b             switch-to-buffer-other-window
+                                        open a selected buffer in another window and move point to that window
+                    C-x 4 c             clone-indirect-buffer-other-window
+                                        clone the current buffer in another window and give it a different name
+                    C-x 4 d             dired-other-window
+                    C-x 4 f             find-file-other-window
+                    C-x 4 m             compose-mail-other-window
+                    C-x 4 r             find-file-read-only-other-window
+                    M-<next>            scroll-other-window
+                    M-<prior>           scroll-other-window-down
+    C-x ^           enlarge window
+
+
+Dired
+    (Dir)ectory (Ed)itor
+    C-x d           select directory and start Dired
+    C-x 4 d         select directory and start Dired in another window
+    n               move next entry, 4 n to 4 lines below
+    p               move previous entry
+    C-s             find text using Isearch
+    +               create file
+    f/e/RET         open file
+    o               open file in another window
+    C-o             open file in another window, but do not select that window
+    V               open file for read only
+    ^               open parent directory and create another Dired buffer
+
+    File Marking
+    m               mark the entry
+    % m             mark all files whose names match supplied regexp
+    % g             mark all files whose contents match supplied regexp
+
+    Operating on files
+    C               prompt for a location to copy the file at point(if no file is marked) or marked files
+    R               prompt for a location to rename or move the file at point(if no file is marked) or marked files (same as 'mv' command in shell)
+    H               prompt for a location to create a hard link
+    S               prompt for a location to create a symbolic link
+    M               change permission bits of file at point or marked files
+
+    Deleting files
+    d               flag file for deletion
+    u               remove flag
+    #               flag all auto-save files (files whose name start and end with '#')
+    ~               flag all backup files
+    % &*            flag for deletion all files that match dired-garbage-files-regexp
+    % d             flag files which matchs a regexp
+    x               confirm and delete flagged files
+
+    Execute shell commands in Dired
+    !               execute a command on selected files
+    &               execute a command on selected files asynchronously
+
+    Compare files
+    =               compare the file at point with another file supplied from minibuffer
+
+    Subdirectories
+    i               insert another directory below
+
+Register
+    C-x r w REG     window-configuration-to-register
+                    save the window configuration of current frame into register REG
+    C-x r f REG     frame-configuration-to-register
+                    save the state of frame, including all their windows
+    C-x r j REG     jump-to-register, if the buffer is killed,
+                    revisit the file and open the buffer, then jump
+    C-x r s REG     copy region into register REG
+    C-x r i REG     insert text from register REG
+    C-x r r REG     copy the region-rectanble into register REG
+                    with C-u prefix, delete it as well
+    C-x r <SPC> REG
+                    record the position of point and the current buffer in register REG
+    C-u <num> C-x r n REG
+                    store <num> into register REG
+    C-u <num> C-x r + REG
+                    if REG contains a number, increment the number by <num>
+
+
+Macro
+    f3 or C-x (     start recording macro
+    f4 or C-x )     stop recording macro
+    C-x e or f4     playback macro
+                    C-u 0 <f4>, repeat until the end of file
+    apply-macro-to-region-lines
+                    highlight the region of remaining lines
+                    C-x C-r r
+                    run the last keyboard macro on each line that in the region
+
+    # so many complex usage, need to explore later
+
+Version Control
+   C-x v v          vc-next-action, commit the current file
+   C-x v =          vc-diff
+   C-x v ~          vc-revision-other-window
+   C-x v g          vc-annotate
+   C-x v l          vc-print-log
+   C-x v u          vc-revert
+
+
+Shell
+    shell           oldest of 3
+    term            terminal emulator written in Emacs Lisp
+    eshell          shell implemented directly in Emacs Lisp
+    ;; explore more in StackExchange
