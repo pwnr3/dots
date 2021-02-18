@@ -1,0 +1,49 @@
+set nocompatible
+let mapleader=','
+
+call plug#begin('~/.vim/plugged')
+Plug 'preservim/nerdtree'
+Plug 'tpope/vim-surround'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'easymotion/vim-easymotion'
+Plug 'msanders/snipmate.vim'
+call plug#end()
+
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+nnoremap c "_c
+nnoremap S :%s//g<Left><Left>
+
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
+autocmd BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
+
+nnoremap <Tab> :NERDTreeToggle<CR>
+let g:NERDTreeShowHidden=1
+
+set encoding=utf-8
+set number
+set cursorline
+set shiftwidth=2 tabstop=2 softtabstop=2
+set textwidth=80
+set noexpandtab
+set wrap
+set lbr
+set tw=200
+set ai si
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set magic
+set nobackup
+set noswapfile
+set laststatus=2
+set nomodeline
+set history=200
+set lazyredraw
+set autoread
+syntax on
+filetype plugin indent on

@@ -1,0 +1,181 @@
+[colors]
+;background = ${xrdb:color0:#222}
+;background = #212E36
+background = #cf172a47
+;it's ARGB so "cfl" is for transparency
+background-alt = #cf3C5A46
+background-unf = #cf2E463E
+background-mod0 = #cf3C5A46
+background-mod1 = #cf546E53
+background-mod2 = #cf708963
+background-alrt = #cfA1BB76
+
+;foreground = ${xrdb:color7:#222}
+foreground = #F3F3BA
+foreground-alt = #F3F3BA
+primary = #F3F3BA
+secondary = #F3F3BA
+
+
+
+[bar/bar]
+;monitor = ${env:MONITOR:HDMI-1}
+width = 100%
+height = 20
+;offset-x = 0%
+;offset-y = 1%
+radius = 0.0
+fixed-center = true
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 0
+line-color = #f00
+
+border-size = 0
+border-color = #00000000
+
+padding-left = 0
+padding-right = 0
+
+module-margin-left = 0
+module-margin-right = 0
+
+font-0 = Hack:size=10;1
+font-1 = FontAwesome:fontformat=truetype:size=10;1
+font-2 = sm4tik:pixelsize=10;1
+font-3 = Font Awesome 5 Free:style=Regular:pixelsize=8;1
+font-4 = Font Awesome 5 Free:style=Solid:pixelsize=8;1
+font-5 = Font Awesome 5 Brands:pixelsize=8;1
+
+modules-left = bspwm
+modules-center = date
+modules-right = powermenu
+
+tray-position = hidden
+tray-padding = 11
+tray-transparent = true
+tray-offset-y = 22
+tray-offset-x = -0
+tray-maxsize = 18
+tray-detached = true
+;tray-background = #0063ff
+
+wm-restack = bspwm
+
+;override-redirect = true
+
+;scroll-up = bspwm-desknext
+;scroll-down = bspwm-deskprev
+
+;scroll-up = i3wm-wsnext
+;scroll-down = i3wm-wsprev
+
+
+
+
+[module/bspwm]
+type = internal/bspwm
+
+label-mode = %mode%
+label-mode-padding = 1
+label-mode-background = #e60053
+
+label-focused = %name%
+label-focused-foreground = #ffffff
+label-focused-background = ${colors.background-alt}
+label-focused-underline = #fba922
+label-focused-padding = 1
+
+label-unfocused = %name%
+label-unfocused-background = ${colors.background-unf}
+label-unfocused-padding = 2
+
+label-visible = %name%
+label-visible-underline = #555555
+label-visible-padding = 2
+
+label-urgent = %name%
+label-urgent-foreground = #000000
+label-urgent-background = ${colors.background-alrt}
+label-urgent-padding = 2
+
+; Separator in between workspaces
+; label-separator = |
+
+[module/wired-network]
+type = internal/network
+interface = ens33
+interval = 3.0
+
+format-connected-underline = #55aa55
+format-connected-prefix = ""
+format-connected-prefix-foreground = ${colors.foreground-alt}
+label-connected = %local_ip%
+
+format-disconnected =
+;format-disconnected = <label-disconnected>
+;format-disconnected-underline = ${self.format-connected-underline}
+;label-disconnected = %ifname% disconnected
+;label-disconnected-foreground = ${colors.foreground-alt}
+
+
+[module/date]
+type = internal/date
+interval = 5
+
+date = 
+date-alt = " %Y-%m-%d"
+
+time = "   %a %b %d     %I:%M %p  "
+time-alt = %H:%M:%S
+
+format-prefix-foreground = ${colors.foreground-alt}
+format-underline = #0a6cf5
+
+label = %date% %time%
+
+;lable = %time%
+
+[module/powermenu]
+type = custom/menu
+
+format-spacing = 1
+
+label-open =  
+label-open-background = ${colors.background-mod1}
+label-open-foreground = ${colors.secondary}
+label-close =  cancel
+label-close-background = ${colors.background-mod2}
+label-close-foreground = ${colors.secondary}
+label-separator = |
+label-separator-foreground = ${colors.foreground-alt}
+
+menu-0-0 = reboot
+menu-0-0-exec = menu-open-1
+menu-0-1 = power off
+menu-0-1-exec = menu-open-2
+
+menu-1-0 = cancel
+menu-1-0-exec = menu-open-0
+menu-1-1 = reboot
+menu-1-1-exec = sudo restart
+
+menu-2-0 = power off
+menu-2-0-exec = sudo poweroff
+menu-2-1 = cancel
+menu-2-1-exec = menu-open-0
+
+
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+;compositing-foreground = source
+;compositing-border = over
+
+
+[global/wm]
+margin-top = 5
+margin-bottom = 5

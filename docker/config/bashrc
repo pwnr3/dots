@@ -1,0 +1,14 @@
+export PATH="$PATH:/root/.config/bin"
+
+alias ls="ls --color=auto --group-directories-first --dereference-command-line-symlink-to-dir"
+alias l='ls -CFa'
+alias ll='ls -alF'
+alias llh='ls -alFh'
+alias lld='ls -Gal --color=always | grep ^d --colour=never'
+alias gdb='gdb -q'
+alias python='python3'
+
+shopt -s autocd
+eval $(dircolors -b "/root/.config/dircolors")
+bind 'set completion-ignore-case on'
+# or: echo set completion on | sudo tee -a /etc/inputrc

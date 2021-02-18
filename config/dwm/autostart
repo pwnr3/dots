@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# start compositor daemon
+picomdaemon
+
+# start dwmbar daemon
+statusbar
+
+# disable screen saver / turn off monitor if inactived for 300 secs
+xset s off
+xset dpms 300 300 300
+killall xss-lock
+xss-lock "$(command -v slock)" &
+
+launchapp () {
+    ! command -v "$1" >/dev/null && return  # command doesn't exist
+    pgrep -u "$USER" -x "$1" && return      # if launched by current user
+    "$@" &
+}
+
+launchapp nm-applet
+launchapp blueman-applet
+launchapp flameshot
+launchapp ibus-daemon -drx
+launchapp nextcloud --background
+
+nitrogen --restore

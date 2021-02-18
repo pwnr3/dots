@@ -1,0 +1,181 @@
+# git/config
+# ---
+# github.com/rafi/.config
+#
+# See: man git-config
+
+[include]
+	# path = users/current # set user info at another place or in this file
+[core]
+	excludesfile = ~/.config/git/ignore
+	hooksPath = ~/.config/git/hooks
+	abbrev = 8
+	# diff-so-fancy
+	pager = diff-so-fancy | less --tabs=2 -RFX
+	# Do NOT auto-convert CRLF line endings into LF
+	autocrlf = false
+	# Do NOT check if converting CRLF is reversible
+	safecrlf = false
+	# Whitespace detection (only warnings)
+	whitespace = trailing-space,space-before-tab
+[http]
+	version = HTTP/1.1
+[credential]
+	helper = cache --timeout=3600
+# [init]
+#	templatedir = ~/.config/git/template
+[pager]
+	show-branch = true
+	status = true
+[pretty]
+	cool = %C(240)%h%C(reset) -%C(auto)%d%Creset %s %C(242)(%an %ar)
+	nice = %C(cyan)%h %C(red)%ad %C(blue)[%an]%C(magenta)%d %C(white)%s
+	mini = %C(auto)%D %C(240)--%C(242)%gD%N %ad by %C(white)%cn%C(reset)
+	info = %C(blue)──────%Creset%n %C(auto)commit %h %C(auto) %D%Creset%n %C(cyan)%an%Creset | %Cgreen%cr%Creset%n%+B
+[status]
+	submodulesummary = true
+	showUntrackedFiles = all
+[fetch]
+	# prune = true
+	recurseSubmodules = true
+[push]
+	# Defines the action git push should take if no refspec is explicitly given:
+	# current = Push the current branch to update a branch with the same name on the receiving end
+	# See https://git-scm.com/docs/git-config#Documentation/git-config.txt-pushdefault
+	default = current
+	followTags = true
+[commit]
+	verbose = true
+[log]
+	date = iso
+	abbrevCommit = true
+[submodule]
+	fetchJobs = 8
+[rerere]
+	enabled = true
+[diff]
+	algorithm = patience
+	renames = copies
+	mnemonicprefix = true
+	compactionHeuristic = true
+	tool = nvimdiff
+[difftool "nvimdiff"]
+  cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[merge]
+	tool = bc3
+	verbosity = 1
+	summary = true
+	stat = true
+	# Standard diff is two sets of final changes.
+	# This introduces the original text before each side's changes.
+	# https://git-scm.com/docs/git-config#Documentation/git-config.txt-mergeconflictStyle
+	conflictstyle = diff3
+[mergetool]
+	prompt = false
+	keepBackup = true
+	writeToTemp = true
+[transfer]
+	# https://git-scm.com/docs/git-config#git-config-transferfsckObjects
+	# via https://groups.google.com/forum/#!topic/binary-transparency/f-BI4o8HZW0
+	fsckobjects = false
+[color]
+	ui = true
+	pager = true
+	showbranch = true
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = auto
+[color "branch"]
+	plain = yellow
+	current = magenta bold
+	local = blue bold
+	remote = white
+	upstream = green bold
+[color "diff"]
+	plain = normal
+	old = red
+	new = green
+	commit = yellow
+	meta = blue
+	frag = cyan
+	func = yellow bold
+	whitespace = red reverse
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "status"]
+	header = 243
+	added = green
+	changed = red
+	untracked = blue
+	branch = green bold
+	nobranch = red
+[url "git@github.com"]
+	insteadOf = gh
+[url "git@bitbucket.org"]
+	insteadOf = bb
+[alias]
+	s  = status -sb
+	f  = fetch --prune
+	c  = commit -v
+	cm = commit -vm
+	br = branch -v
+	st = status
+	ck = checkout
+	t  = tag --column
+	tn = tag -n
+	d  = diff
+	ds = diff --staged
+	dw = diff --color-words
+	dh = diff --color-words HEAD
+	dp = !git log --pretty=mini | fzf | cut -d ' ' -f1 | xargs -o git show
+	patch = !git --no-pager diff --no-color
+	prune = fetch --prune
+	mend = commit --amend --no-edit
+	reword = commit --amend
+	track = checkout --track
+	topic = !git checkout "$(git current-remote)/master" -b
+	stash-all = stash save --include-untracked
+	w  = whatchanged --decorate
+	wp = whatchanged --decorate -p
+	#===============================================
+	sm    = submodule
+	smu   = submodule foreach git pull origin master
+	lcrev = log --reverse --no-merges --stat @{1}..
+	lcp   = diff @{1}..
+	#===============================================
+	tree = log --graph --all --oneline --decorate
+	lb   = log --graph --simplify-by-decoration --pretty=mini --notes --date-order --relative-date
+	# log  = log --pretty=cool
+	lg   = log --graph --pretty=cool --all
+	lgd  = log --graph --pretty=cool
+	lgw  = !sh -c '"while true; do clear; git lg -15; sleep 5; done"'
+	#===============================================
+	bf = !git diff "$(git oldest-ancestor)..@"
+	post  = !sh -c 'git format-patch --stdout $1 | ix' -
+	sync-tags = fetch --prune origin '+refs/tags/*:refs/tags/*'
+	recent-branches = !git for-each-ref --count=15 --sort=-committerdate refs/heads/ --format='%(authordate:relative) %(refname:short)'
+	oldest-ancestor = "!bash -c 'f() { \
+		/usr/bin/diff --old-line-format='' --new-line-format='' \
+			<(git rev-list --first-parent ${0:-master}) \
+			<(git rev-list --first-parent ${1:-HEAD}) \
+		| head -1; \
+		}; f $@'"
+	ours   = "!f() { git checkout --ours $@ && git add $@; }; f"
+	theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
+	remote-fork = "!f() { \
+		git remote add rafi \"$(git config remote.origin.url \
+			| gsed 's;\\(github.com[/:]\\)[^/]\\+;\\1rafi;')\" && \
+		git fetch rafi; \
+	}; f"
+	#===============================================
+	# Take a snapshot of your current working tree without removing the changes from your tree.
+	# via http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
+	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+	snapshots = !git stash list --grep snapshot
+[user]
+	email = test@gmail.com
+	name = test

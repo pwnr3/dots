@@ -1,0 +1,10 @@
+http-user=USER_NAME
+http-passwd=PASSWORD
+allow-overwrite=true
+dir=${HOME}/Downloads
+file-allocation=falloc
+enable-http-pipelining=true
+input-file=${HOME}/input.rapidshare
+log-level=error
+max-connection-per-server=4
+summary-interval=30

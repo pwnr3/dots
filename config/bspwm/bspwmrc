@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Set environment
+export BSPWM_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/bspwm"
+
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+bspc config remove_disabled_monitors	true
+bspc config remove_unplugged_monitors	true
+
+bspc config focus_follows_pointer	true
+bspc config pointer_follows_focus	true
+bspc config pointer_motion_interval	5
+bspc config pointer_action1		move
+bspc config pointer_action2		resize_side
+bspc config directional_focus_tightness	low
+
+bspc config border_width	2
+bspc config window_gap		5
+bspc config top_padding		0
+
+bspc config split_ratio			0.52
+bspc config borderless_monocle		true
+bspc config gapless_monocle		true
+
+# bspc monitor -d I II III IV V
+bspc monitor --reset-desktops term www dev virt play
+
+# bspc desktop '^1' --layout monocle # use monocle layout on desktop 1
+# make windows float on specific desktops
+bspc subscribe node_manage | while read -r event monitor desktop nodeid ipid; do
+	case "$desktop" in
+		www|virt|play)
+			bspc node "$nodeid" --state floating
+			;;
+	esac
+done &
+
+bspc rule --add Firefox			desktop='www' follow=on
+bspc rule --add Chromium		desktop='www' follow=on
+
+bspc rule --add Emacs			desktop='dev' follow=on
+bspc rule --add Vim			desktop='dev' follow=on
+
+bspc rule --add qemu-system-i386	desktop='virt' follow=on
+bspc rule --add qemu-system-x86_64	desktop='virt' follow=on
+bspc rule --add Virt-manager		desktop='virt' follow=on
+bspc rule --add VirtualBox		desktop='virt' follow=on
+bspc rule --add VmWare			desktop='virt' follow=on
+
+bspc rule --add URxvt:popup		state=floating
+bspc rule --add URxvt:scratchpad	sticky=on state=floating border=off
+bspc rule --add feh			state=floating
+
+$HOME/.config/polybar/launch.sh 

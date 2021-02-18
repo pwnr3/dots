@@ -1,0 +1,19 @@
+# insert configuration into /etc/docker/daemon, json doesn't support comment
+# do not include comma after last element
+# need to restart docker after modification, check with 'docker info'
+
+{
+  "registry-mirrors": [
+		"https://tnxkcso1.mirror.aliyuncs.com",
+		"https://eqcxmbvw.mirror.aliyuncs.com",
+		"https://aeckruos.mirror.aliyuncs.com",
+		"https://reg-mirror.qiniu.com",
+		"https://quay-mirror.qiniu.com",
+		"https://registry.docker-cn.com",
+		"https://hub-mirror.c.163.com",
+		"https://mirrors.tuna.tsinghua.edu.cn",
+		"https://docker.mirrors.ustc.edu.cn",
+		"https://mirror.baidubce.com"
+  ],
+	"experimental": false
+}
