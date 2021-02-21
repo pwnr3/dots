@@ -73,19 +73,6 @@ nnoremap S :%s//g<Left><Left>
 cnoremap W execute 'write !sudo tee % >/dev/null' <bar> setl nomodified
 "com -bar w!! exe 'w !sudo tee >/dev/null %:p:S' | setl nomod
 
-"Disable auto comment insertion, check with ':set formatoptions?'
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-"Back to last position when opening
-autocmd BufWritePost $MYVIMRC source $MYVIMRC
-autocmd BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
-"Delete all trailing whitespaces and newlines at the end of file on save
-"autocmd BufWritePre * %s/\s\+$//e
-"autocmd BufWritePre * %s/\n\+\%$//e
-"autocmd BufWritePre *.[ch] %s/\%$/\r/e
-"Run commands after change, as example:
-"autocmd BufWritePost ~/repos/dwm/config.def.h !cd ~/repos/dwm/; sudo make install && { killall -q -9 dwm; setsid -f dwm }
-
-
 "Plugin
 nmap <C-P> :FZF<CR>
 nnoremap <Tab> :NERDTreeToggle<CR>
@@ -101,9 +88,10 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-let g:coc_user_config={}
-let g:coc_user_config['coc.preferences.jumpCommand'] = ':CocSplitIfNotOpen'
-command! -nargs=+ CocSplitIfNotOpen :call SplitIfNotOpen(<f-args>)
+"let g:coc_user_config={}
+"let g:coc_user_config['coc.preferences.jumpCommand'] = ':CocSplitIfNotOpen'
+"command! -nargs=+ CocSplitIfNotOpen :call SplitIfNotOpen(<f-args>)
+nmap <silent> gD :call CocAction('jumpDefinition', 'vsplit')<CR>
 
 set path=.,src "fix gf for typescript
 set suffixesadd=.js,.ts
@@ -136,11 +124,30 @@ syntax on
 filetype plugin indent on
 
 
+"Disable auto comment insertion, check with ':set formatoptions?'
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+"Back to last position when opening
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
+autocmd BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
+"Delete all trailing whitespaces and newlines at the end of file on save
+"autocmd BufWritePre * %s/\s\+$//e
+"autocmd BufWritePre * %s/\n\+\%$//e
+"autocmd BufWritePre *.[ch] %s/\%$/\r/e
+"Run commands after change, as example:
+"autocmd BufWritePost ~/repos/dwm/config.def.h !cd ~/repos/dwm/; sudo make install && { killall -q -9 dwm; setsid -f dwm }
+"Auto create path when destination file/folder doesn't exist
+augroup BWCCreatedir
+	autocmd!
+	autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
+
+
 "Functions
 function s:remove_pair() abort
 	let pair = getline('.')[ col('.')-2 : col('.')-1 ]
 	return stridx('""''''()[]<>{}', pair) % 2 == 0 && len(pair) == 0 && col('.') > 1 ? "\<del>\<c-h>" : "\<bs>"
 endfunction
+
 function! SplitIfNotOpen(...)
 	let fname=a:1
 	let call=''
@@ -156,4 +163,13 @@ function! SplitIfNotOpen(...)
 		exe "vsplit " . fname
 	endif
 	exe call
+endfunction
+
+function s:MkNonExDir(file, buf)
+	if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+		let dir=fnamemodify(a:file, ':h')
+		if !isdirectory(dir)
+			call mkdir(dir, 'p')
+		endif
+	endif
 endfunction

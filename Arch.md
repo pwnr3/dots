@@ -1,4 +1,6 @@
 # Setup
+* downgrade
+	pacman -U https://archive.archlinux.org/packages/.....
 * where is autoload man page
 	autoload isn't in bash but in zsh/ksh
 	`man zshbuiltins`, `man zshmodules`, `man zshcompsys`
