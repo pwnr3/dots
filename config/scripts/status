@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Battery
+[ ! -e /sys/class/power_supply/BAT?* ] && echo "No battery found"
+
+for battery in /sys/class/power_supply/BAT?*
+do
+	status=$(cat "$battery/status")
+	case "$status" in
+		"Full") status="";;
+		"Discharging") status="";;
+		"Charging") status="";;
+		"Not Charging") ;;
+		"Unknown") status="";;
+	esac
+	capacity=$(cat "$battery/capacity")
+	[ "$status" != "Charging" ] && [ "$capacity" -le 20 ] && warn=""
+	printf "%s %s%d%%\n" "$status" "$warn" "$capacity"; unset warn
+done
+
+# Forecast
