@@ -19,6 +19,7 @@ call plug#end()
 "noremap(no recursive), inoremap(insert mode), vnoremap(visual mode), nnoremap(normal mode)
 "nnoremap j jzz
 inoremap <C-d> <Del>
+inoremap <C-k> <Esc><Right>d$a
 inoremap <C-b> <Left>
 inoremap <C-f> <Right>
 inoremap <C-a> <Home>
@@ -68,6 +69,7 @@ imap <C-h> <bs>
 "or use text-obj to delete parenthesis, e.g. `C-o dab`
 
 "Utils
+nnoremap <leader>O O<Esc>O
 nnoremap c "_c
 nnoremap S :%s//g<Left><Left>
 cnoremap W execute 'write !sudo tee % >/dev/null' <bar> setl nomodified
@@ -92,6 +94,7 @@ nmap <silent> gr <Plug>(coc-references)
 "let g:coc_user_config['coc.preferences.jumpCommand'] = ':CocSplitIfNotOpen'
 "command! -nargs=+ CocSplitIfNotOpen :call SplitIfNotOpen(<f-args>)
 nmap <silent> gD :call CocAction('jumpDefinition', 'vsplit')<CR>
+nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 set path=.,src "fix gf for typescript
 set suffixesadd=.js,.ts
@@ -145,7 +148,8 @@ augroup END
 "Functions
 function s:remove_pair() abort
 	let pair = getline('.')[ col('.')-2 : col('.')-1 ]
-	return stridx('""''''()[]<>{}', pair) % 2 == 0 && len(pair) == 0 && col('.') > 1 ? "\<del>\<c-h>" : "\<bs>"
+	"echo '''''' ==> '' ('' equal \', while \ is not supported in vimscript str)
+	return stridx('""''''()[]<>{}', pair) % 2 == 0 && len(pair) % 2 == 0 && col('.') > 1 ? "\<del>\<c-h>" : "\<bs>"
 endfunction
 
 function! SplitIfNotOpen(...)
@@ -171,5 +175,15 @@ function s:MkNonExDir(file, buf)
 		if !isdirectory(dir)
 			call mkdir(dir, 'p')
 		endif
+	endif
+endfunction
+
+function! s:show_documentation()
+	if (index(['vim', 'help'], &filetype) >= 0)
+		execute 'h '.expand('<cword>')
+	elseif (coc#rpc#ready())
+		call CocActionAsync('doHover')
+	else
+		execute '!' . &keywordprg . " " . expand('<cword>')
 	endif
 endfunction

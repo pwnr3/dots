@@ -39,7 +39,7 @@
 !! rxvt-unicode !!
 !!!!!!!!!!!!!!!!!!
 
-URxvt*font: xft:Hack:style=Regular:size=14:pixelsize=16:antialias=true
+URxvt*font: xft:"agave Nerd Font":style=r:size=14
 
 ! URxvt*intensityStyles: true
 ! URxvt*linespace: 0
