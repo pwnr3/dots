@@ -1,21 +1,108 @@
 #!/bin/sh
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+NOCOLOR='\033[0m'
 
-# Battery
+#echo -e ${BLACK}black${RED}red${GREEN}green${YELLOW}yellow${BLUE}blue${PURPLE}purple${CYAN}cyan${WHITE}white
+
+
+echo -ne "${YELLOW}Battery:\n\t"
 [ ! -e /sys/class/power_supply/BAT?* ] && echo "No battery found"
-
 for battery in /sys/class/power_supply/BAT?*
 do
-	status=$(cat "$battery/status")
-	case "$status" in
-		"Full") status="";;
-		"Discharging") status="";;
-		"Charging") status="";;
+	battery_status=$(cat "$battery/status")
+	case "$battery_status" in
+		"Full") battery_status+="  ";;
+		"Discharging") battery_status+="  ";;
+		"Charging") battery_status+="  ";;
 		"Not Charging") ;;
-		"Unknown") status="";;
+		"Unknown") battery_status+="  ";;
 	esac
 	capacity=$(cat "$battery/capacity")
-	[ "$status" != "Charging" ] && [ "$capacity" -le 20 ] && warn=""
-	printf "%s %s%d%%\n" "$status" "$warn" "$capacity"; unset warn
+	[ "$battery_status" != "Charging" ] && [ "$capacity" -le 20 ] && warn=""
+	printf "%s%s%d%%\n" "$battery_status" "$warn" "$capacity"; unset warn
 done
 
-# Forecast
+
+echo -ne "${PURPLE}Memory:\n\t"
+free -m | sed -n '2{p;q}' | awk '{printf ("%2.2fGiB/%2.2fGiB(%.2f%%)\n", ($3/1024), ($2/1024), ($3/$2 * 100))}'
+
+echo -ne "${GREEN}Storage:\n\t"
+df -h / | awk ' /[0-9]/ {print $3 "/" $2 "(" $5 ")"}'
+
+
+echo -e "${RED}CPU:"
+sensors | awk '/Core/ {print "\011" $0}'
+
+sleep_count=1
+NPROC=(`nproc`)
+for ((i = 0; i < $NPROC; i++))
+do
+	((index=i+2))
+	procstat_t1=(`cat /proc/stat | grep '^cpu' | sed -n "$index,$index p"`)
+	user_t1[$i]=${procstat_t1[1]}
+	nice_t1[$i]=${procstat_t1[2]}
+	system_t1[$i]=${procstat_t1[3]}
+	idle_t1[$i]=${procstat_t1[4]}
+	iowait_t1[$i]=${procstat_t1[5]}
+	irq_t1[$i]=${procstat_t1[6]}
+	softirq_t1[$i]=${procstat_t1[7]}
+	steal_t1[$i]=${procstat_t1[8]}
+	guest_t1[$i]=${procstat_t1[9]}
+	guest_nice_t1[$i]=${procstat_t1[10]}
+	((total_t1[$i]=user_t1[$i]+nice_t1[$i]+system_t1[$i]+idle_t1[$i]+iowait_t1[$i]+irq_t1[$i]+softirq_t1[$i]+steal_t1[$i]+guest_t1[$i]+guest_nice))
+done
+sleep $sleep_count
+for ((i = 0; i < $NPROC; i++))
+do
+	((index=i+2))
+	procstat_t2=(`cat /proc/stat | grep '^cpu' | sed -n "$index,$index p"`)
+	user_t2[$i]=${procstat_t2[1]}
+	nice_t2[$i]=${procstat_t2[2]}
+	system_t2[$i]=${procstat_t2[3]}
+	idle_t2[$i]=${procstat_t2[4]}
+	iowait_t2[$i]=${procstat_t2[5]}
+	irq_t2[$i]=${procstat_t2[6]}
+	softirq_t2[$i]=${procstat_t2[7]}
+	steal_t2[$i]=${procstat_t2[8]}
+	guest_t2[$i]=${procstat_t2[9]}
+	guest_nice_t2[$i]=${procstat_t2[10]}
+	((total_t2[$i]=user_t2[$i]+nice_t2[$i]+system_t2[$i]+idle_t2[$i]+iowait_t2[$i]+irq_t2[$i]+softirq_t2[$i]+steal_t2[$i]+guest_t2[$i]+guest_nice))
+done
+for (( i = 0; i < $NPROC; i++ )); do
+	((user_subtracted[$i]=user_t2[$i]-user_t1[$i]))
+	((nice_subtracted[$i]=nice_t2[$i]-nice_t1[$i]))
+	((idle_subtracted[$i]=idle_t2[$i]-idle_t1[$i]))
+	((system_subtracted[$i]=system_t2[$i]-system_t1[$i]))
+	((iowait_subtracted[$i]=iowait_t2[$i]-iowait_t1[$i]))
+	((irq_subtracted[$i]=irq_t2[$i]-irq_t1[$i]))
+	((softirq_subtracted[$i]=softirq_t2[$i]-softirq_t1[$i]))
+	((steal_subtracted[$i]=steal_t2[$i]-steal_t1[$i]))
+	((guest_subtracted[$i]=guest_t2[$i]-guest_t1[$i]))
+	((guest_nice_subtracted[$i]=guest_nice_t2[$i]-guest_nice_t1[$i]))
+	((total_subtracted[$i]= total_t2[$i]-total_t1[$i]))
+done
+printf "\t%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-10s\n" "CPUPID" "user" "nice" "system" "idle" "iowait" "irq" "softirq" "steal" "guest" "guest_nice"
+for (( i = 0; i < $NPROC; i++ )); do
+	((pcpu[$i]= 100 * (total_subtracted[$i]-idle_subtracted[$i]) / total_subtracted[$i]))
+	((user_p[$i]= 100 * user_subtracted[$i]/total_subtracted[$i]))
+	((nice_p[$i]= 100 * nice_subtracted[$i]/total_subtracted[$i]))
+	((idle_p[$i]= 100 * idle_subtracted[$i]/total_subtracted[$i]))
+	((system_p[$i]= 100 * system_subtracted[$i]/total_subtracted[$i]))
+	((iowait_p[$i]= 100 * iowait_subtracted[$i]/total_subtracted[$i]))
+	((irq_p[$i]= 100 * irq_subtracted[$i]/total_subtracted[$i]))
+	((softirq_p[$i]= 100 * softirq_subtracted[$i]/total_subtracted[$i]))
+	((steal_p[$i]= 100 * steal_subtracted[$i]/total_subtracted[$i]))
+	((guest_p[$i]= 100 * guest_subtracted[$i]/total_subtracted[$i]))
+	((guest_nice_p[$i]= 100 * guest_nice_subtracted[$i]/total_subtracted[$i]))
+	printf "\t%-10s%-10d%-10d%-10d%-10d%-10d%-10d%-10d%-10d%-10d%-10d\n" cpu$i'('${pcpu[$i]}'%)' ${user_p[$i]} ${nice_p[$i]} ${system_p[$i]} ${idle_p[$i]} ${iowait_p[$i]} ${irq_p[$i]} ${softirq_p[$i]} ${steal_p[$i]} ${guest_p[$i]} ${guest_nice_p[$i]}
+done
+
+
+echo -e ${NOCOLOR}
