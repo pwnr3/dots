@@ -171,3 +171,6 @@ cause they have different path
 		(can also combine with deepin-wine, https://gitee.com/wsgalaxy/flatpak-deepinwine-wiki)
 
 # Misc
+	* github
+		git config --global url.https://github.com.cnpmjs.org/.insteadof https://github.com
+		git config --global http.proxy socks5://127.0.0.1:1086
