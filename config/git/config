@@ -20,6 +20,7 @@
 	whitespace = trailing-space,space-before-tab
 [http]
 	version = HTTP/1.1
+	# proxy = socks5://127.0.0.1:1086
 [credential]
 	helper = cache --timeout=3600
 # [init]

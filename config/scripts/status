@@ -11,7 +11,8 @@ NOCOLOR='\033[0m'
 
 #echo -e ${BLACK}black${RED}red${GREEN}green${YELLOW}yellow${BLUE}blue${PURPLE}purple${CYAN}cyan${WHITE}white
 
-
+##################################################
+# Battery 
 echo -ne "${YELLOW}Battery:\n\t"
 [ ! -e /sys/class/power_supply/BAT?* ] && echo "No battery found"
 for battery in /sys/class/power_supply/BAT?*
@@ -28,19 +29,46 @@ do
 	[ "$battery_status" != "Charging" ] && [ "$capacity" -le 20 ] && warn=""
 	printf "%s%s%d%%\n" "$battery_status" "$warn" "$capacity"; unset warn
 done
-
-
+##################################################
+# Memory 
 echo -ne "${PURPLE}Memory:\n\t"
 free -m | sed -n '2{p;q}' | awk '{printf ("%2.2fGiB/%2.2fGiB(%.2f%%)\n", ($3/1024), ($2/1024), ($3/$2 * 100))}'
-
+##################################################
+# Storage 
 echo -ne "${GREEN}Storage:\n\t"
 df -h / | awk ' /[0-9]/ {print $3 "/" $2 "(" $5 ")"}'
-
-
+##################################################
+# Network 
+echo -e "${CYAN}Network:"
+sleep_net=.5
+ethernet_state=$(cat /sys/class/net/e*/operstate 2>/dev/null)
+wifi_state=$(cat /sys/class/net/w*/operstate 2>/dev/null)
+echo -ne "\tEthernet(${ethernet_state})"
+if [[ ${ethernet_state} == 'up' ]]
+then
+	R1=`cat /sys/class/net/e*/statistics/rx_bytes`
+	T1=`cat /sys/class/net/e*/statistics/tx_bytes`
+	sleep $sleep_net
+	R2=`cat /sys/class/net/e*/statistics/rx_bytes`
+	T2=`cat /sys/class/net/e*/statistics/tx_bytes`
+	printf "\t tx: %dKiB/s rx: %dKiB/s" $(((T2-T1)/1024)) $(((R2-R1)/1024))
+fi
+echo -ne "\n\tWifi(${wifi_state})"
+if [[ ${wifi_state} == 'up' ]]
+then
+	R1=`cat /sys/class/net/w*/statistics/rx_bytes`
+	T1=`cat /sys/class/net/w*/statistics/tx_bytes`
+	sleep $sleep_net
+	R2=`cat /sys/class/net/w*/statistics/rx_bytes`
+	T2=`cat /sys/class/net/w*/statistics/tx_bytes`
+	printf "\t tx: %dKiB/s rx: %dKiB/s\n" $(((T2-T1)/1024)) $(((R2-R1)/1024))
+fi
+##################################################
+# CPU 
 echo -e "${RED}CPU:"
 sensors | awk '/Core/ {print "\011" $0}'
 
-sleep_count=1
+sleep_cpu=1
 NPROC=(`nproc`)
 for ((i = 0; i < $NPROC; i++))
 do
@@ -58,7 +86,7 @@ do
 	guest_nice_t1[$i]=${procstat_t1[10]}
 	((total_t1[$i]=user_t1[$i]+nice_t1[$i]+system_t1[$i]+idle_t1[$i]+iowait_t1[$i]+irq_t1[$i]+softirq_t1[$i]+steal_t1[$i]+guest_t1[$i]+guest_nice))
 done
-sleep $sleep_count
+sleep $sleep_cpu
 for ((i = 0; i < $NPROC; i++))
 do
 	((index=i+2))
