@@ -85,7 +85,7 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 "Use `:CocDiagnostics` to get all info
 nmap <silent> [g <Plug>(coc-diagnostics-prev)
-nmap <silent> ]g <Plug>(coc-diagnostics-prev)
+nmap <silent> ]g <Plug>(coc-diagnostics-next)
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
