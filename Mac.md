@@ -337,3 +337,11 @@ fptw64.exe -me -f mod_bios.bin # flash ME region
 fptw64.exe -greset # run after flashing, not seen from most guide
 afuwinx64.exe # write bios with GUI?
 change logo # a tool that work as its name says
+
+# firefox disable auto update
+# abput:policies, /Applications/Firefox.app/Contents/Resources/distribution/policies.json
+{
+  "policies": {
+    "DisableAppUpdate": false
+  }
+}

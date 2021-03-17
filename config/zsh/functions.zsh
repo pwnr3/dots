@@ -88,3 +88,16 @@ function path_abbr {
 rgl() {
 	rg -p "$@" | less -XFR
 }
+
+# Convert Git to Shallow clone
+cgs() {
+	[ ! -d .git ] && return
+	ORIGIN_URL=$(git remote get-url origin)
+	COMMIT=$(git rev-parse HEAD)
+
+	rm -rf .git
+	git init .
+	git remote add origin $ORIGIN_URL
+	git fetch origin $COMMIT --depth 1
+	git reset --mixed $COMMIT
+}
