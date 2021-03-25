@@ -90,14 +90,19 @@ rgl() {
 }
 
 # Convert Git to Shallow clone
+# convert git to shallow clone
 cgs() {
-	[ ! -d .git ] && return
+	[ ! -d .git ] && echo "not a git repository" && return
 	ORIGIN_URL=$(git remote get-url origin)
 	COMMIT=$(git rev-parse HEAD)
 
-	rm -rf .git
+	mv .git .git.bak
 	git init .
 	git remote add origin $ORIGIN_URL
 	git fetch origin $COMMIT --depth 1
 	git reset --mixed $COMMIT
+	[ $? -eq 0 ] && rm -rf .git.bak && echo "Success - Convert git repo into shallow clone" && return
+	echo "Fail - Restoring old .git folder"
+	rm -rf .git
+	mv .git.bak .git
 }

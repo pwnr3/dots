@@ -58,6 +58,8 @@
 * git rebase
 	1. make linear commit history (compare with 'git merge')
 	2. git rebase -i HEAD~~ (interactively rebase, squash history commit)
+* "undo" all uncommitted changes: git add . && git stash && git stash drop (or git stash -u && git stash drop)
+* also remove untracked file: git clean -fdx
 
 # vim
 

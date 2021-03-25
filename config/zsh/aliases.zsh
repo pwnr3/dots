@@ -66,3 +66,4 @@ alias sbcl='rlwrap sbcl'
 alias brave='brave --incognito --password-store=/tmp/bravepass'
 alias sbrave='brave --proxy-server="socks5://127.0.0.1:1086"'
 # /usr/lib/brave-bin/brave --profile-directory=Default --proxy-pac-url='data:application/x-javascript-config;base64,'$(base64 -w0 /path/to/proxy.pac) "$@"
+alias SSR='HTTPS_PROXY=socks5://127.0.0.1:1086 HTTP_PROXY=socks5://127.0.0.1:1086 ALL_PROXY=socks5://127.0.0.1:1086'
