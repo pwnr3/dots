@@ -43,6 +43,7 @@ nnoremap <leader>0 :tablast<CR>
 nnoremap <leader>k :bufdo bd<CR>
 "delete all buffers and edit last buffer, use \|(escape) or <bar>
 nnoremap <leader>o :%bd\|e#<CR>
+nnoremap <leader>q :bd<CR>
 nnoremap <silent><Up> :resize +1<CR>
 nnoremap <silent><Down> :resize -1<CR>
 nnoremap <silent><Left> :vertical resize +1<CR>
