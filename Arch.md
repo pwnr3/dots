@@ -116,10 +116,10 @@
 	use C-O to jump back, use C-I(same as TAB, occupied by nerdtreetoggle) to jump forward
 	or use C-^ to open previous open file, which can work backward and forward (same as :e#)
 * buffer
-	:ls				like ':buffers', list all buffers
-	:bd/bw		kill buffer. bd remains the jump list, so 'C-O' will work, while bw(wipeout) not
-	:[v]sb#		open buffer in [vertical] split window with specific buffer number
-	:b#				switch to buffer #, # is a number
+	:ls									like ':buffers', list all buffers
+	:bd/bw							kill buffer. bd remains the jump list, so 'C-O' will work, while bw(wipeout) not
+	:[vertical ]sb#			open buffer in [vertical] split window with specific buffer number
+	:b#									switch to buffer #, # is a number
 
 
 # python

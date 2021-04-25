@@ -1,15 +1,22 @@
 snippet pwn
-	#!/usr/bin/env python3
-	# -*- coding: utf-8 -*-
-	from pwn import *
+	#!/usr/bin/env python
+  # -*- coding: utf-8 -*-
+  from pwn import *
+  import sys, os
 
-	context(arch='${1:amd64}', log_level='debug', terminal=['tmux', 'split -h', '-p 65'])
+  context(terminal=['tmux', 'split', '-h', '-p 65'])
 
-	# elf = ELF(${2:})
-	# libc = elf.libc
-	io = process($2)
-	# io = remote('', '')
+  HOST, PORT = (sys.argv[1], sys.argv[2]) if len(sys.argv) > 2 else ('localhost', 9999)
+  elf = ELF('${1:}'); context.arch = elf.arch
+  with context.local(log_level='debug'): # or error
+      libc = ELF('libc.so.6') if os.path.exists('libc.so.6') else elf.libc
+  if not libc: log.warning('Cannot open libc.so.6')
 
+  r = remote(HOST, PORT)
+
+  ${2}
+
+	r.interactive()
 snippet sc32
 	'\x31\xc9\xf7\xe1\xb0\x0b\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80'
 snippet sc64

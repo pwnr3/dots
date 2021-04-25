@@ -345,3 +345,7 @@ change logo # a tool that work as its name says
     "DisableAppUpdate": false
   }
 }
+
+# bad IO(disk performance)
+too much log recorder, try to decrease non-useful log
+trim mode (check archlinux wiki page:solid state drive)
